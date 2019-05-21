@@ -14,7 +14,6 @@ use Throwable;
  */
 class EmitirPoliza
 {
-
     private $url;
     private $logs;
 
@@ -51,9 +50,7 @@ class EmitirPoliza
             $data = json_decode($response->getBody()->getContents());
 
             if ($data->errorCode !== -1) {
-
             } else {
-
             }
 
             return $result;
