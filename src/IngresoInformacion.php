@@ -24,17 +24,19 @@ class IngresoInformacion
     private $url;
 
     /**
-     * IngresoInformacion constructor.
+     * @var
      */
-    public function __construct(string $url)
+    private $logs;
+
+    /**
+     * IngresoInformacion constructor.
+     * @param string $url
+     * @param bool $logs
+     */
+    public function __construct(string $url, bool $logs = false)
     {
         $this->url = $url;
-    }
-
-
-
-    public function validate($data)
-    {
+        $this->logs = $logs;
     }
 
     /**
@@ -53,7 +55,6 @@ class IngresoInformacion
         $result->proceso = null;
 
         $logger = new Logger('vehiculos_ingreso_info');
-
         $logger->pushHandler(new StreamHandler(__DIR__.'/emision_vehiculos.log', Logger::DEBUG));
         $logger->pushHandler(new FirePHPHandler());
 
@@ -70,7 +71,9 @@ class IngresoInformacion
             try {
                 $response = $client->post('ingresoInfo', [ 'json' => $data ]);
                 $end_time = microtime(true);
-                $logger->info('Finaliza ingreso de info', [ 'elapsed' => $end_time - $start_time ]);
+                if ($this->logs) {
+                    $logger->info('Finaliza ingreso de info', ['elapsed' => $end_time - $start_time]);
+                }
                 $data = json_decode($response->getBody()->getContents());
 
                 if ($data->errorCode !== -1) {
@@ -80,10 +83,12 @@ class IngresoInformacion
                     $result->response = $data;
                     $result->proceso = $data->proceso;
 
-                    $logger->info('Respuesta de ingreso de info', [
-                        'proceso' => $data->proceso,
-                        'message' => $data->txt_mensaje
-                    ]);
+                    if ($this->logs) {
+                        $logger->info('Respuesta de ingreso de info', [
+                            'proceso' => $data->proceso,
+                            'message' => $data->txt_mensaje
+                        ]);
+                    }
                 } else {
                     if ($data->txt_mensaje = "  Chasis Duplicado") {
                         $result->error = true;
@@ -97,18 +102,22 @@ class IngresoInformacion
                         $result->response = $data;
                     }
 
-                    $logger->error('Error al ingresar la info', [
-                        'proceso' => $data->proceso,
-                        'message' => $data->txt_mensaje
-                    ]);
+                    if ($this->logs) {
+                        $logger->error('Error al ingresar la info', [
+                            'proceso' => $data->proceso,
+                            'message' => $data->txt_mensaje
+                        ]);
+                    }
                 }
 
                 return $result;
                 //}
             } catch (ConnectException $e) {
                 $end_time = microtime(true);
-                $logger->error('Timeout', [ 'elapsed' => $end_time - $start_time ]);
 
+                if ($this->logs) {
+                    $logger->error('Timeout', ['elapsed' => $end_time - $start_time]);
+                }
                 $result->error = true;
                 $result->errorCode = $e->getCode();
                 $result->errorMessage = $e->getMessage();
@@ -117,7 +126,10 @@ class IngresoInformacion
                 return $result;
             } catch (Throwable $e) {
                 $end_time = microtime(true);
-                $logger->error('Error', [ 'elapsed' => $end_time - $start_time ]);
+
+                if ($this->logs) {
+                    $logger->error('Error', ['elapsed' => $end_time - $start_time]);
+                }
 
                 $result->error = true;
                 $result->errorCode = $e->getCode();
