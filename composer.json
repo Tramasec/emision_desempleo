@@ -1,10 +1,10 @@
 {
-    "name": "tramasec/emision_vehiculos",
+    "name": "tramasec/git remote add origin https://github.com/Tramasec/emision_vehiculos.git",
     "description": "Emisiones",
     "authors": [
         {
             "name": "Tramas",
-            "email": ""
+            "email": "vsandoval@tramasec.com"
         }
     ],
     "type": "project",
