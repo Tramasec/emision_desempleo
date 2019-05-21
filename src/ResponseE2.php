@@ -1,9 +1,9 @@
 <?php
-namespace Tramasec\EmisionVehiculosSesa;
+namespace Tramasec\EmisionVehiculos;
 
 /**
  * Class ResponseE2
- * @package Tramasec\EmisionVehiculosSesa
+ * @package Tramasec\EmisionVehiculos
  */
 class ResponseE2
 {
@@ -21,4 +21,5 @@ class ResponseE2
     public $fecha_emision = null;
     public $codigo_asegurado = null;
     public $codigo_pagador = null;
+    public $errors = [];
 }

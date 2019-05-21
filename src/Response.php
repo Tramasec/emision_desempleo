@@ -1,9 +1,9 @@
 <?php
-namespace Tramasec\EmisionVehiculosSesa;
+namespace Tramasec\EmisionVehiculos;
 
 /**
  * Class Response
- * @package Tramasec\EmisionVehiculosSesa
+ * @package Tramasec\EmisionVehiculos
  */
 class Response
 {
@@ -13,4 +13,5 @@ class Response
     public $response = null;
     public $proceso = null;
     public $retry = false;
+    public $errors = [];
 }

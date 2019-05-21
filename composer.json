@@ -1,12 +1,10 @@
 {
-    "name": "buonzz/composer-library-template",
-    "description": "Boilerplate package for creating other packages.",
-    "keywords": ["template", "composer", "package"],
-    "license": "DBAD",
+    "name": "tramasec/emision_vehiculos",
+    "description": "Emisiones",
     "authors": [
         {
-            "name": "Darwin Biler",
-            "email": "buonzz@gmail.com"
+            "name": "Tramas",
+            "email": ""
         }
     ],
     "type": "project",
@@ -24,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Tramasec\\EmisionVehiculosSesa\\": "src/"
+            "Tramasec\\EmisionVehiculos\\": "src/"
         }
     }
 }

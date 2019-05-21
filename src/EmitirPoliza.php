@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculosSesa;
+namespace Tramasec\EmisionVehiculos;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -10,7 +10,7 @@ use Throwable;
 
 /**
  * Class EmitirPoliza
- * @package Tramasec\EmisionVehiculosSesa
+ * @package Tramasec\EmisionVehiculos
  */
 class EmitirPoliza
 {
@@ -32,6 +32,16 @@ class EmitirPoliza
     {
         $start_time = microtime(true);
         $result = new ResponseE2();
+
+        $estructura = new EstructuraEmision();
+
+        if (!$estructura->validate($data)) {
+            $result->errors = $estructura->errors;
+            $result->retry = false;
+            $result->errorMessage = 'Error en estructura de información';
+
+            return $result;
+        }
 
         $logger = new Logger('vehiculos_generar_poliza');
         $logger->pushHandler(new StreamHandler(__DIR__.'/emision_vehiculos.log', Logger::DEBUG));

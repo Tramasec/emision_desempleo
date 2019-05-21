@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculosSesa;
+namespace Tramasec\EmisionVehiculos;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;

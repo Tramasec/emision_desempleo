@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculosSesa;
+namespace Tramasec\EmisionVehiculos;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -10,7 +10,7 @@ use \Throwable;
 
 /**
  * Class IngresoInformacion
- * @package Tramasec\EmisionVehiculosSesa
+ * @package Tramasec\EmisionVehiculos
  *
  * Acceso al servicio web para ingreso de información previa a la creación de una póliza
  *
