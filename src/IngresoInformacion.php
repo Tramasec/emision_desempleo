@@ -48,11 +48,6 @@ class IngresoInformacion
     {
         $start_time = microtime(true);
         $result = new Response();
-        $result->error = true;
-        $result->errorCode = null;
-        $result->errorMessage = null;
-        $result->response = [];
-        $result->proceso = null;
 
         $logger = new Logger('vehiculos_ingreso_info');
         $logger->pushHandler(new StreamHandler(__DIR__.'/emision_vehiculos.log', Logger::DEBUG));
@@ -65,7 +60,7 @@ class IngresoInformacion
         if ($estructura->validate($data)) {
             $client = new Client([
                 'base_uri' => $this->url,
-                'timeout'  => 2.0, //timeout después de 20 segundos
+                'timeout'  => 20.0, //timeout después de 20 segundos
             ]);
 
             try {
@@ -76,10 +71,10 @@ class IngresoInformacion
                 }
                 $data = json_decode($response->getBody()->getContents());
 
-                if ($data->errorCode !== -1) {
+                if ($data->sn_error === '0') {
                     $result->error = false;
                     $result->errorCode = $data->sn_error;
-                    $result->errorMessage = $data->txt_mensaje;
+                    $result->errorMessage = empty($data->txt_mensaje) ? 'Información ingresada' : $data->txt_mensaje;
                     $result->response = $data;
                     $result->proceso = $data->proceso;
 
@@ -90,17 +85,10 @@ class IngresoInformacion
                         ]);
                     }
                 } else {
-                    if ($data->txt_mensaje = "  Chasis Duplicado") {
-                        $result->error = true;
-                        $result->errorCode = $data->sn_error;
-                        $result->errorMessage = 'Chasis Duplciado';
-                        $result->response = $data;
-                    } else {
-                        $result->error = true;
-                        $result->errorCode = $data->sn_error;
-                        $result->errorMessage = $data->txt_mensaje;
-                        $result->response = $data;
-                    }
+                    $result->error = true;
+                    $result->errorCode = $data->sn_error;
+                    $result->errorMessage = trim($data->txt_mensaje);
+                    $result->response = $data;
 
                     if ($this->logs) {
                         $logger->error('Error al ingresar la info', [
@@ -122,6 +110,7 @@ class IngresoInformacion
                 $result->errorCode = $e->getCode();
                 $result->errorMessage = $e->getMessage();
                 $result->response = [];
+                $result->retry = true;
 
                 return $result;
             } catch (Throwable $e) {
@@ -135,6 +124,7 @@ class IngresoInformacion
                 $result->errorCode = $e->getCode();
                 $result->errorMessage = $e->getMessage();
                 $result->response = [];
+                $result->retry = true;
 
                 return $result;
             }

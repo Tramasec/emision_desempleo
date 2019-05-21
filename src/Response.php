@@ -7,9 +7,10 @@ namespace Tramasec\EmisionVehiculosSesa;
  */
 class Response
 {
-    public $error;
-    public $errorCode;
-    public $errorMessage;
-    public $response;
-    public $proceso;
+    public $error = null;
+    public $errorCode = null;
+    public $errorMessage = null;
+    public $response = null;
+    public $proceso = null;
+    public $retry = false;
 }
