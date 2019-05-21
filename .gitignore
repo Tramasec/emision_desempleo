@@ -4,3 +4,4 @@ vendor
 .idea
 .php_cs.cache
 src/emision_vehiculos.log
+emision_vehiculos.log

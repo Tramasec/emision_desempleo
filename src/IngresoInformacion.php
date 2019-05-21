@@ -101,23 +101,26 @@ class IngresoInformacion
                 return $result;
                 //}
             } catch (ConnectException $e) {
+                $err = (object) $e->getHandlerContext();
                 $end_time = microtime(true);
 
                 if ($this->logs) {
-                    $logger->error('Timeout', ['elapsed' => $end_time - $start_time]);
+                    $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
                 }
+
                 $result->error = true;
-                $result->errorCode = $e->getCode();
-                $result->errorMessage = $e->getMessage();
+                $result->errorCode = $err->errno;
+                $result->errorMessage = $err->error;
                 $result->response = [];
                 $result->retry = true;
 
                 return $result;
             } catch (Throwable $e) {
                 $end_time = microtime(true);
+                $err = (object) $e->getHandlerContext();
 
                 if ($this->logs) {
-                    $logger->error('Error', ['elapsed' => $end_time - $start_time]);
+                    $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
                 }
 
                 $result->error = true;
