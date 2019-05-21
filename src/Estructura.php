@@ -21,7 +21,7 @@ class Estructura
             'id_certificado'    => [ new Assert\NotBlank() ],
             'item'              => [ new Assert\NotBlank(), new Assert\EqualTo(['value' => '1']) ],
             'cod_usuario'       => [ new Assert\NotBlank() ],
-            'poliza'            => [ new Assert\Type( [ 'type' => 'numeric' ] ) ],
+            'poliza'            => [ new Assert\Type([ 'type' => 'numeric' ]) ],
 
 
             // ------------------- INFORMACION TITULAR ------------------
@@ -36,11 +36,11 @@ class Estructura
             'ciudad2'           => [ new Assert\Regex(['pattern' => '/^[\pL\pM\p{Zs}.-]+$/u']) ],
             'direccion2'        => [],
             'direccion3'        => [],
-            'telf_particular'   => [ new Assert\Type( [ 'type' => 'numeric' ] ) ],
+            'telf_particular'   => [ new Assert\Type([ 'type' => 'numeric' ]) ],
             'telefono3'         => [],
             'telefono4'         => [],
             'fecha_nacim'       => [ new Assert\Date() ],
-            'telf_oficina'      => [ new Assert\Type( [ 'type' => 'numeric' ] ) ],
+            'telf_oficina'      => [ new Assert\Type([ 'type' => 'numeric' ]) ],
             'indicativo'        => [ new Assert\NotBlank(), new Assert\Email() ],
             'ciudad'            => [ new Assert\Regex(['pattern' => '/^[\pL\pM\p{Zs}.-]+$/u']), new Assert\NotBlank() ],
             'provincia'         => [ new Assert\Regex(['pattern' => '/^[\pL\pM\p{Zs}.-]+$/u']), new Assert\NotBlank() ],
@@ -162,14 +162,11 @@ class Estructura
      */
     public function validate(array $data)
     {
-
         $validate = Validation::createValidator();
         $response = $validate->validate($data, $this->validations);
-
         $errors = [];
 
         foreach ($response as $error) {
-
             $key = str_replace(['[', ']'], '', $error->getPropertyPath());
 
             if (!isset($errors[$key])) {
@@ -183,5 +180,4 @@ class Estructura
 
         return $response->count() == 0 ? true : false;
     }
-
 }
