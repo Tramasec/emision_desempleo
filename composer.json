@@ -15,7 +15,6 @@
         "doctrine/annotations": "^1.6",
         "symfony/yaml": "^4.2",
         "guzzlehttp/guzzle": "~6.0",
-        "monolog/monolog": "^1.24",
         "vlucas/phpdotenv": "^3.3"
     },
     "require-dev": {
