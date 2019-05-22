@@ -14,4 +14,5 @@ class Response
     public $proceso = null;
     public $retry = false;
     public $errors = [];
+    public $elapsed = null;
 }

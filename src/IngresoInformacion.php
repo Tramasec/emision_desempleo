@@ -49,10 +49,6 @@ class IngresoInformacion
         $start_time = microtime(true);
         $result = new Response();
 
-        $logger = new Logger('vehiculos_ingreso_info');
-        $logger->pushHandler(new StreamHandler(__DIR__.'/emision_vehiculos.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler());
-
         //Primero verificar si el arreglo cumple con los parámetros básicos
         $estructura = new Estructura();
 
@@ -66,9 +62,6 @@ class IngresoInformacion
             try {
                 $response = $client->post('ingresoInfo', [ 'json' => $data ]);
                 $end_time = microtime(true);
-                if ($this->logs) {
-                    $logger->info('Finaliza ingreso de info', ['elapsed' => $end_time - $start_time]);
-                }
                 $data = json_decode($response->getBody()->getContents());
 
                 if ($data->sn_error === '0') {
@@ -77,25 +70,13 @@ class IngresoInformacion
                     $result->errorMessage = empty($data->txt_mensaje) ? 'Información ingresada' : $data->txt_mensaje;
                     $result->response = $data;
                     $result->proceso = $data->proceso;
-
-                    if ($this->logs) {
-                        $logger->info('Respuesta de ingreso de info', [
-                            'proceso' => $data->proceso,
-                            'message' => $data->txt_mensaje
-                        ]);
-                    }
+                    $result->elapsed = $end_time - $start_time;
                 } else {
                     $result->error = true;
                     $result->errorCode = $data->sn_error;
                     $result->errorMessage = trim($data->txt_mensaje);
                     $result->response = $data;
-
-                    if ($this->logs) {
-                        $logger->error('Error al ingresar la info', [
-                            'proceso' => $data->proceso,
-                            'message' => $data->txt_mensaje
-                        ]);
-                    }
+                    $result->elapsed = $end_time - $start_time;
                 }
 
                 return $result;
@@ -104,33 +85,31 @@ class IngresoInformacion
                 $err = (object) $e->getHandlerContext();
                 $end_time = microtime(true);
 
-                if ($this->logs) {
-                    $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
-                }
-
                 $result->error = true;
                 $result->errorCode = $err->errno;
                 $result->errorMessage = $err->error;
                 $result->response = [];
                 $result->retry = true;
+                $result->elapsed = $end_time - $start_time;
 
                 return $result;
             } catch (Throwable $e) {
                 $end_time = microtime(true);
                 $err = (object) $e->getHandlerContext();
 
-                if ($this->logs) {
-                    $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
-                }
-
                 $result->error = true;
-                $result->errorCode = $e->getCode();
-                $result->errorMessage = $e->getMessage();
+                $result->errorCode = $err->errno;
+                $result->errorMessage = $err->error;
                 $result->response = [];
                 $result->retry = true;
+                $result->elapsed = $end_time - $start_time;
 
                 return $result;
             }
+        } else {
+            $result->errors = $estructura->errors;
+            $result->errorMessage = 'Estructura no válida';
+            return $result;
         }
     }
 }
