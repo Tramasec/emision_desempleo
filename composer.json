@@ -11,12 +11,12 @@
     "type": "project",
     "require": {
 		"php": ">=7.1",
-        "symfony/validator": "^4.*",
+        "symfony/validator": "4.*",
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
-        "symfony/var-dumper": "^4.2",
-        "vlucas/phpdotenv": "^3.3"
+        "symfony/var-dumper": "4.2",
+        "vlucas/phpdotenv": "3.3"
     },
     "autoload": {
         "psr-4": {
