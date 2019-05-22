@@ -22,10 +22,9 @@ class EmitirPoliza
      * @param string $url
      * @param bool $logs
      */
-    public function __construct(string $url, bool $logs = false)
+    public function __construct(string $url)
     {
         $this->url = $url;
-        $this->logs = $logs;
     }
 
     public function send(array $data)
@@ -42,10 +41,6 @@ class EmitirPoliza
 
             return $result;
         }
-
-        $logger = new Logger('vehiculos_generar_poliza');
-        $logger->pushHandler(new StreamHandler(__DIR__.'/emision_vehiculos.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler());
 
         $client = new Client([
             'base_uri' => $this->url,
