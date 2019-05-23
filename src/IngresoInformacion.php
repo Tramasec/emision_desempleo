@@ -57,6 +57,7 @@ class IngresoInformacion
             $client = new Client([
                 'base_uri' => $this->url,
                 'timeout'  => 20.0, //timeout después de 20 segundos
+                'force_ip_resolve' => 'v4'
             ]);
 
             try {
