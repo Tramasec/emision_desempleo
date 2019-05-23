@@ -1,6 +1,7 @@
 {
     "name": "tramasec/emision_vehiculos",
-    "description": "Emisiones",
+    "description": "Emisiones Vehiculos",
+    "license": "MIT",
     "minimum-stability": "stable",
     "authors": [
         {
