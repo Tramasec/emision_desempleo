@@ -150,7 +150,7 @@ class Estructura
             'cod_estado'        => [],
             'log_error'         => [],
             'flag'              => [ new Assert\NotBlank(), new Assert\Type(['type' => 'numeric']) ],
-
+            'extras'            => [],
 
 
         ]);
