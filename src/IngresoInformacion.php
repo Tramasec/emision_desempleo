@@ -86,11 +86,10 @@ class IngresoInformacion
                 return $result;
             } catch (Throwable $e) {
                 $end_time = microtime(true);
-                $err = (object) $e->getHandlerContext();
 
                 $result->error = true;
-                $result->errorCode = isset($err->errno) ? $err->errno : $e->getCode();
-                $result->errorMessage = isset($err->error) ? $err->error : $e->getMessage();
+                $result->errorCode = $e->getCode();
+                $result->errorMessage = $e->getMessage();
                 $result->response = [];
                 $result->retry = true;
                 $result->elapsed = $end_time - $start_time;

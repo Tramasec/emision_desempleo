@@ -3,9 +3,6 @@ namespace Tramasec\EmisionVehiculos;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
-use Monolog\Handler\FirePHPHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Throwable;
 
 /**
@@ -56,10 +53,6 @@ class EmitirPoliza
         try {
             $response = $client->post('generaPoliza', [ 'json' => $data ]);
             $end_time = microtime(true);
-
-            if ($this->logs) {
-                $logger->info('Finaliza emisión de póliza', ['elapsed' => $end_time - $start_time]);
-            }
             $data = json_decode($response->getBody()->getContents());
 
             if ($data->sn_error === '0') {
@@ -116,11 +109,10 @@ class EmitirPoliza
             return $result;
         } catch (Throwable $e) {
             $end_time = microtime(true);
-            $err = (object) $e->getHandlerContext();
 
             $result->error = true;
-            $result->errorCode = isset($err->errno) ? $err->errno : $e->getCode();
-            $result->errorMessage = isset($err->error) ? $err->error : $e->getMessage();
+            $result->errorCode = $e->getCode();
+            $result->errorMessage = $e->getMessage();
             $result->response = [];
             $result->retry = true;
             $result->elapsed = $end_time - $start_time;

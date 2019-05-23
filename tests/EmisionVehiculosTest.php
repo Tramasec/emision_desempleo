@@ -20,10 +20,11 @@ class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($response->errorCode, 0);
         $this->assertEquals($response->errorMessage, "Información ingresada");
         $this->assertFalse($response->retry);
-        $this->assertGreaterThan( 1, $response->proceso);
+        $this->assertGreaterThan(1, $response->proceso);
 
         //Emitir
         $emitir = new \Tramasec\EmisionVehiculos\EmitirPoliza($url);
+        $response_temp = $response;
 
         $response = $emitir->send([
             'id_proceso'        => $response->proceso,
@@ -35,11 +36,25 @@ class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($response->errorCode, 0);
         $this->assertEquals($response->errorMessage, "Se generó correctamente la poliza");
         $this->assertFalse($response->retry);
-        $this->assertGreaterThan( 1, $response->idpv);
-        $this->assertGreaterThan( 1, $response->numero_poliza);
-        $this->assertGreaterThan( 1, $response->codigo_asegurado);
-        $this->assertGreaterThan( 1, $response->codigo_pagador);
+        $this->assertGreaterThan(1, $response->idpv);
+        $this->assertGreaterThan(1, $response->numero_poliza);
+        $this->assertGreaterThan(1, $response->codigo_asegurado);
+        $this->assertGreaterThan(1, $response->codigo_pagador);
 
+        //POLIZA YA GENERADA
+
+        $response = $emitir->send([
+            'id_proceso'        => $response_temp->proceso,
+            'id_certificado'    => $dato['certificado'],
+            'cod_usuario'       => $dato['cod_usuario'],
+        ]);
+
+        $this->assertFalse($response->error);
+        $this->assertEquals($response->errorCode, -1);
+        $this->assertEquals($response->errorMessage, "Poliza ya generada");
+        $this->assertFalse($response->retry);
+        $this->assertGreaterThan(1, $response->idpv);
+        //TODO AGREGAR IDPV Y DEMÁS CODIGOS
 
         //CHASIS DUPLICADO
         $response = $ingreso->send($dato);
@@ -48,6 +63,5 @@ class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($response->errorCode, -1);
         $this->assertEquals($response->errorMessage, "Chasis Duplicado");
         $this->assertFalse($response->retry);
-
     }
 }
