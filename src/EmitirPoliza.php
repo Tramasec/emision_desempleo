@@ -14,19 +14,24 @@ use Throwable;
  */
 class EmitirPoliza
 {
+    /**
+     * @var string
+     */
     private $url;
-    private $logs;
 
     /**
      * EmitirPoliza constructor.
      * @param string $url
-     * @param bool $logs
      */
     public function __construct(string $url)
     {
         $this->url = $url;
     }
 
+    /**
+     * @param array $data
+     * @return ResponseE2
+     */
     public function send(array $data)
     {
         $start_time = microtime(true);
@@ -45,6 +50,7 @@ class EmitirPoliza
         $client = new Client([
             'base_uri' => $this->url,
             'timeout'  => 60.0, //timeout después de 60 segundos
+            'force_ip_resolve' => 'v4'
         ]);
 
         try {
@@ -70,17 +76,13 @@ class EmitirPoliza
                 $result->fecha_emision = $data->fecha_emision;
                 $result->codigo_pagador = $data->cod_pagador;
                 $result->numero_factura = $data->numero_factura;
-
-                if ($this->logs) {
-                    $logger->info('Respuesta de generación de póliza', [
-                        'message' => $data->txt_mensaje
-                    ]);
-                }
+                $result->elapsed = $end_time - $start_time;
             } else {
                 $result->error = true;
                 $result->errorCode = $data->sn_error;
                 $result->errorMessage = trim($data->txt_mensaje);
                 $result->response = $data;
+                $result->elapsed = $end_time - $start_time;
 
                 if ($result->errorMessage === 'Poliza ya generada') {
                     $result->error = false;
@@ -96,14 +98,6 @@ class EmitirPoliza
                 } else {
                     $result->retry = true;
                 }
-
-
-                if ($this->logs) {
-                    $logger->error('Error al ingresar la info', [
-                        'proceso' => $data->proceso,
-                        'message' => $data->txt_mensaje
-                    ]);
-                }
             }
 
             return $result;
@@ -112,30 +106,24 @@ class EmitirPoliza
             $err = (object) $e->getHandlerContext();
             $end_time = microtime(true);
 
-            if ($this->logs) {
-                $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
-            }
-
             $result->error = true;
             $result->errorCode = $err->errno;
             $result->errorMessage = $err->error;
             $result->response = [];
             $result->retry = true;
+            $result->elapsed = $end_time - $start_time;
 
             return $result;
         } catch (Throwable $e) {
             $end_time = microtime(true);
             $err = (object) $e->getHandlerContext();
 
-            if ($this->logs) {
-                $logger->error($err->error, ['elapsed' => $end_time - $start_time]);
-            }
-
             $result->error = true;
-            $result->errorCode = $e->getCode();
-            $result->errorMessage = $e->getMessage();
+            $result->errorCode = isset($err->errno) ? $err->errno : $e->getCode();
+            $result->errorMessage = isset($err->error) ? $err->error : $e->getMessage();
             $result->response = [];
             $result->retry = true;
+            $result->elapsed = $end_time - $start_time;
 
             return $result;
         }

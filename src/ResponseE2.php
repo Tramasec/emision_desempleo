@@ -22,4 +22,5 @@ class ResponseE2
     public $codigo_asegurado = null;
     public $codigo_pagador = null;
     public $errors = [];
+    public $elapsed = null;
 }

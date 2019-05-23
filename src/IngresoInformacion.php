@@ -3,9 +3,6 @@ namespace Tramasec\EmisionVehiculos;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
-use Monolog\Handler\FirePHPHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use \Throwable;
 
 /**
@@ -24,19 +21,12 @@ class IngresoInformacion
     private $url;
 
     /**
-     * @var
-     */
-    private $logs;
-
-    /**
      * IngresoInformacion constructor.
      * @param string $url
-     * @param bool $logs
      */
-    public function __construct(string $url, bool $logs = false)
+    public function __construct(string $url)
     {
         $this->url = $url;
-        $this->logs = $logs;
     }
 
     /**
@@ -99,8 +89,8 @@ class IngresoInformacion
                 $err = (object) $e->getHandlerContext();
 
                 $result->error = true;
-                $result->errorCode = $err->errno;
-                $result->errorMessage = $err->error;
+                $result->errorCode = isset($err->errno) ? $err->errno : $e->getCode();
+                $result->errorMessage = isset($err->error) ? $err->error : $e->getMessage();
                 $result->response = [];
                 $result->retry = true;
                 $result->elapsed = $end_time - $start_time;
