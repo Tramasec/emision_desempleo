@@ -12,7 +12,6 @@
     "type": "project",
     "require": {
 		"php": ">=7.1",
-        "symfony/validator": "4.*",
         "guzzlehttp/guzzle": "~6.0",
         "rakit/validation": "^1.1"
     },
