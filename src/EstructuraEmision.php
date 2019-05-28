@@ -1,6 +1,7 @@
 <?php
-namespace Tramasec\EmisionVehiculos;
+namespace Tramasec\EmisionDesempleo;
 
+use Rakit\Validation\Validator;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
@@ -15,13 +16,10 @@ class EstructuraEmision
 
     public function __construct()
     {
-        $this->validations = new Assert\Collection(
-            [
-                'id_proceso'        => [ new Assert\Type([ 'type' => 'numeric']), new Assert\NotBlank() ],
-                'id_certificado'    => [ new Assert\NotBlank() ],
-                'cod_usuario'       => [ new Assert\NotBlank() ]
-            ]
-        );
+        $this->validations = [
+            'ID_PROCESO'        => 'required|numeric',
+            'COD_USUARIO'       => 'required'
+        ];
     }
 
     /**
@@ -30,22 +28,15 @@ class EstructuraEmision
      */
     public function validate(array $data)
     {
-        $validate = Validation::createValidator();
+        $validate = new Validator;
         $response = $validate->validate($data, $this->validations);
-        $errors = [];
 
-        foreach ($response as $error) {
-            $key = str_replace(['[', ']'], '', $error->getPropertyPath());
-
-            if (!isset($errors[$key])) {
-                $errors[$key] = [];
-            }
-
-            $errors[$key][] = $error->getMessage();
+        try{
+            $this->errors = $response->errors()->toArray();
+        }catch (\Throwable $e){
+            $this->errors = [];
         }
 
-        $this->errors = $errors;
-
-        return $response->count() == 0 ? true : false;
+        return $response->errors()->count() == 0 ? true : false;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculos;
+namespace Tramasec\EmisionDesempleo;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -44,9 +44,16 @@ class IngresoInformacion
 
         //Si es válida enviamos la información al servicio web
         if ($estructura->validate($data)) {
+
+            //Convertir datos
+            //$data['fecha_nacim'] = \DateTime::createFromFormat('Y-m-d', $data['fecha_nacim'])
+            //    ->format('Y-m-d');
+
+            //dump($data['fecha_nacim']);die;
+
             $client = new Client([
                 'base_uri' => $this->url,
-                'timeout'  => 20.0, //timeout después de 20 segundos
+                'timeout'  => 90.0, //timeout después de 20 segundos
                 'force_ip_resolve' => 'v4'
             ]);
 

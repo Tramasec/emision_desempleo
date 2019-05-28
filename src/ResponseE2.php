@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculos;
+namespace Tramasec\EmisionDesempleo;
 
 /**
  * Class ResponseE2

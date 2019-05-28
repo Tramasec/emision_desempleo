@@ -1,5 +1,5 @@
-# Librería para emisión de vehículos 
+# Librería para emisión de desempleo 
 
 ## Instalación:
 
-composer require tramasec/emision_vehiculos
+composer require tramasec/emision_desempleo

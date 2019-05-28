@@ -1,5 +1,5 @@
 <?php
-namespace Tramasec\EmisionVehiculos;
+namespace Tramasec\EmisionDesempleo;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -46,7 +46,7 @@ class EmitirPoliza
 
         $client = new Client([
             'base_uri' => $this->url,
-            'timeout'  => 60.0, //timeout después de 60 segundos
+            'timeout'  => 120.0, //timeout después de 60 segundos
             'force_ip_resolve' => 'v4'
         ]);
 
@@ -55,7 +55,9 @@ class EmitirPoliza
             $end_time = microtime(true);
             $data = json_decode($response->getBody()->getContents());
 
-            if ($data->sn_error === '0') {
+            dump($data);
+
+            if ($data->sn_error === '1') {
                 $result->error = false;
                 $result->errorCode = $data->sn_error;
                 $result->errorMessage = empty($data->txt_mensaje) ? 'Póliza generada' : $data->txt_mensaje;
@@ -67,7 +69,7 @@ class EmitirPoliza
                 $result->numero_endoso = $data->numero_endoso;
                 $result->idpv = $data->id_pv;
                 $result->fecha_emision = $data->fecha_emision;
-                $result->codigo_pagador = $data->cod_pagador;
+                //TODO$result->codigo_pagador = $data->cod_pagador;
                 $result->numero_factura = $data->numero_factura;
                 $result->elapsed = $end_time - $start_time;
             } else {
@@ -87,7 +89,7 @@ class EmitirPoliza
                     $result->numero_endoso = $data->numero_endoso;
                     $result->idpv = $data->id_pv;
                     $result->fecha_emision = $data->fecha_emision;
-                    $result->codigo_pagador = $data->cod_pagador;
+                    //TODO$result->codigo_pagador = $data->cod_pagador;
                 } else {
                     $result->retry = true;
                 }

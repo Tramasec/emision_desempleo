@@ -1,6 +1,6 @@
 {
-    "name": "tramasec/emision_vehiculos",
-    "description": "Emisiones Vehiculos",
+    "name": "tramasec/emision_desempleo",
+    "description": "Emisiones DEsempleo",
     "license": "MIT",
     "minimum-stability": "stable",
     "authors": [
@@ -13,14 +13,17 @@
     "require": {
 		"php": ">=7.1",
         "symfony/validator": "4.*",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "rakit/validation": "^1.1"
     },
     "require-dev": {
-        "fzaninotto/faker": "^1.8"
+        "fzaninotto/faker": "^1.8",
+        "symfony/dotenv": "^4.2",
+        "symfony/var-dumper": "^4.2"
     },
     "autoload": {
         "psr-4": {
-            "Tramasec\\EmisionVehiculos\\": "src/"
+            "Tramasec\\EmisionDesempleo\\": "src/"
         }
     }
 }

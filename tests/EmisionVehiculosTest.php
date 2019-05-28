@@ -2,12 +2,15 @@
 
 class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testIngresoInfoOKDup()
     {
-        $dotenv = Dotenv\Dotenv::create(__DIR__);
-        $dotenv->load();
-
+        $dotenv = new \Symfony\Component\Dotenv\Dotenv();
+        $dotenv->load(__DIR__.'/.env');
         $url = getenv('EMISION_URL');
+
         $ingreso = new \Tramasec\EmisionVehiculos\IngresoInformacion($url);
         $dato = (array) json_decode(getenv('ESTRUCTURA_INGRESO'));
         $faker = Faker\Factory::create();
@@ -15,6 +18,8 @@ class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
         $dato['chasis'] = $faker->text(45);
 
         $response = $ingreso->send($dato);
+
+        dump($response);
 
         $this->assertFalse($response->error);
         $this->assertEquals($response->errorCode, 0);
@@ -31,6 +36,8 @@ class EmisionVehiculosTest extends \PHPUnit\Framework\TestCase
             'id_certificado'    => $dato['certificado'],
             'cod_usuario'       => $dato['cod_usuario'],
         ]);
+
+        dump($response);
 
         $this->assertFalse($response->error);
         $this->assertEquals($response->errorCode, 0);
